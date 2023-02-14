@@ -72,16 +72,13 @@ static int __init DriverInit(void){
   for (; i<27; ++i){
     if (gpio_request(gpio_nums[i], gpio_labels[i])){
       printk("GPIO %d was not allocated!\n", gpio_nums[i]);
-      goto GpioError;
+      gpio_free(gpio_nums[i]);
+      return -1;
     }
   }
   
+  printk("The device has been successfully initialized!\n");
   return 0;
-  
-  GpioError:
-    gpio_free(gpio_nums[i]);
-  
-  return -1;
 }
 
 static void __exit DriverExit(void){
