@@ -34,7 +34,7 @@ static struct file_operations fops = {
   .owner = THIS_MODULE,
   .open = driver_open,
   .release = driver_release
-}
+};
 
 static int __init DriverInit(void){
   char gpio_labels[27][10] = {"gpio-71", "gpio-72", "gpio-13", "gpio-148", "gpio-147", 
