@@ -17,4 +17,5 @@ sudo apt install linux-headers-generic
 ### Updates
 
 • 14/02/2023: Uploaded `gpio_driver.c` and its corresponding `Makefile`. Driver successfully initializes the GPIO pins of the Rockpi N10.
+
 • 08/02/2023: Created `Linux-Character-Driver` GitHub repository for collaborative development of a character driver.
