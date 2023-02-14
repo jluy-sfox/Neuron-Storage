@@ -86,10 +86,11 @@ static int __init DriverInit(void){
 
 static void __exit DriverExit(void){
   
+  int i = 0;
+  
   printk("Driver: DriverExit() was called!\n");
   
   // Release allocated GPIO pins
-  int i = 0;
   for (; i<27; ++i){
     gpio_free(gpio_nums[i]);
   }
