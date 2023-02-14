@@ -20,6 +20,48 @@ int gpio_nums[27] = {71, 72, 13, 148, 147, 146, 9, 150, 149,
                      8, 70, 40, 39, 124, 41, 42, 64, 65, 74, 73, 
                      125, 127, 68, 66, 126, 67, 34};
 
+// NEED TO TEST
+static ssize_t driver_read(struct file *file, const char __user *user_buffer, size_t size, loff_t *offset){
+  char tmp[3] = "\n";
+  
+  int data, user_data;
+  int data_copy = min(size, sizeof tmp);
+  
+  // Read value of GPIO number 71
+  printk("Value of GPIO pin 0: %d\n", gpio_get_value(71));
+  tmp[0] = gpio_get_value(71) + "0";
+  
+  user_data = copy_to_user(user_buffer, &tmp, data_copy);
+  
+  data = data_copy - user_data;
+  
+  return data;
+}
+
+// NEED TO TEST
+static ssize_t driver_write(){
+  
+  char tmp;
+  
+  int data, user_data;
+  int data_copy = min(size, sizeof tmp);
+  
+  user_data = copy_from_user(&tmp, user_buffer, data_copy);
+  
+  // Write value of GPIO number 71
+  if (value == "0"){
+    gpio_set_value(71, 0);
+  } else if (value == "1"){
+    gpio_set_value(71, 1);
+  } else{
+    printk("Invalid input!\n");
+  }
+  
+  data = data_copy - user_data;
+  
+  return data;
+}
+
 static int driver_open(struct inode *inode, struct file *file){
   printk("Driver: driver_open() was called!\n");
   return 0;
