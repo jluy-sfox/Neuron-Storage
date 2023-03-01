@@ -15,6 +15,7 @@ struct dp_cmd_desc {
   struct dp_cmd_desc *next;
 };
 
+// Placeholder
 int dp_request(struct dp_cmd_desc*){
   return 1;
 }
