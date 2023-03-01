@@ -1,7 +1,5 @@
 # Deeply Human
-
-## Simple Linux Character Driver
-A collaborative repository for the development of a simple Linux character driver
+A collaborative repository for the development of C programs pertinent to the Neuron Storage project
 
 ### Preliminaries
 
