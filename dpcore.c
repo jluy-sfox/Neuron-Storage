@@ -1,7 +1,5 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
 
 struct dp_cmd_desc {
   unsigned int *src_addr_0;
@@ -17,48 +15,63 @@ struct dp_cmd_desc {
   struct dp_cmd_desc *next;
 };
 
-int dp_request(struct dp_cmd_desc *){
+int dp_request(struct dp_cmd_desc*){
   return 1;
 }
 
-const char *read_file(char *directory) {
+int main(int argc, char *argv[]){
 
-  FILE *fp;
-  char *line = NULL;
-  size_t len = 0;
-  ssize_t read;
+  char *infile;
+  char *outfile;
+  char *passphrase;
+  char *operation;
 
-  fp = fopen(directory, "r");
+  FILE *fp1, *fp2;
+  char ch;
 
-  while ((read = getline(&line, &len, fp)) != -1) {
-    printf("%s", line);
+  // Check input arguments: <infile> <outfile> <passphrase> <operation>
+  if (argc == 5){ 
+    infile = argv[1];
+    outfile = argv[2];
+    passphrase = argv[3];
+    operation = argv[4];
+    printf("The input file is %s\n", infile);
+    printf("The output file is %s\n", outfile);
+    printf("The passphrase is %s\n", passphrase);
+    printf("The operation is %s\n", operation);
+  } else { 
+    return 1; // Error
   }
-
-  fclose(fp);
-  if (line) {
-    free(line);
+ 
+  // Open input file
+  fp1 = fopen(infile, "r");
+ 
+  // Error handling
+  if (fp1 == NULL){
+    puts("Cannot open file");
+    exit(0);
   }
-  
-  return line;
-}
-
-int main(){
-  
-  // Initialization of temporary variables
-  struct dirent *pDirent_top;
-  DIR *pDir_top;
-  struct dirent *pDirent_bot;
-  DIR *pDir_bot;
-
-  FILE* ptr;
-  char directory[] = ""; // Insert directory here
-  
-  pDir_top = opendir(directory);
-  
-  if (pDir_top == NULL) {
-    printf("Cannot open directory '%s'\n", directory);
-    return 1;
+ 
+  // Create outfile
+  fp2 = fopen(outfile, "w");
+ 
+  // Error handling
+  if (fp2 == NULL){
+    puts("Not able to create file");
+    fclose(fp1);
+    exit(0);
   }
-  
-  return 0;
+ 
+  // TEST: Copy contents of infile to outfile, character by character
+  while ((ch = fgetc(fp1)) != EOF){
+    fputc(ch, fp2);
+  }
+ 
+  printf("File copied successfully!\n");
+ 
+  // Close both files
+  fclose(fp1);
+  fclose(fp2);
+
+  return 0; 
 }
