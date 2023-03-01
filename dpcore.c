@@ -15,9 +15,61 @@ struct dp_cmd_desc {
   struct dp_cmd_desc *next;
 };
 
-// Placeholder
 int dp_request(struct dp_cmd_desc*){
   return 1;
+}
+
+int read_file(char *filename, char array[4096]){
+
+  FILE *in;
+  int i = 0;
+  int j = 0;
+
+  // Open the text file
+  in = fopen(filename, "r");
+    
+  // Read the contents of the file into the array
+  while(!feof(in)){
+    fscanf(in, "%c", &array[i]);
+    ++i;
+  }
+
+  // Close the file to avoid errors
+  fclose(in);
+
+  // Print the contents of the array
+  for (; j < i-1; ++j){
+    printf("%c", array[j]);
+  }
+
+  return j;
+
+}
+
+void write_file(char *filename, char array[4096], int arr_size){
+
+  FILE *out;
+  int i = 0;
+
+  // Open an output file to write to
+  out = fopen(filename, "w");
+  
+  // Error handling
+  if (out == NULL){
+    puts("Not able to create file");
+    exit(0);
+  }
+ 
+  // Write contents of the array to newly created file
+  for (i = 0; i < arr_size; ++i){
+    fprintf(out, "%c", array[i]);
+  }
+  
+  printf("\nFile copied successfully!");
+ 
+  // Close the outfile
+  fclose(out);
+
 }
 
 int main(int argc, char *argv[]){
@@ -26,9 +78,11 @@ int main(int argc, char *argv[]){
   char *outfile;
   char *passphrase;
   char *operation;
+  
+  int input_len;
 
-  FILE *fp1, *fp2;
-  char ch;
+  // Variable for the storage of file contents
+  char array[4096];
 
   // Check input arguments: <infile> <outfile> <passphrase> <operation>
   if (argc == 5){ 
@@ -43,36 +97,12 @@ int main(int argc, char *argv[]){
   } else { 
     return 1; // Error
   }
- 
-  // Open input file
-  fp1 = fopen(infile, "r");
- 
-  // Error handling
-  if (fp1 == NULL){
-    puts("Cannot open file");
-    exit(0);
-  }
- 
-  // Create outfile
-  fp2 = fopen(outfile, "w");
- 
-  // Error handling
-  if (fp2 == NULL){
-    puts("Not able to create file");
-    fclose(fp1);
-    exit(0);
-  }
- 
-  // TEST: Copy contents of infile to outfile, character by character
-  while ((ch = fgetc(fp1)) != EOF){
-    fputc(ch, fp2);
-  }
- 
-  printf("File copied successfully!\n");
- 
-  // Close both files
-  fclose(fp1);
-  fclose(fp2);
+
+  // Read input file and store contents in the array
+  input_len = read_file(infile, array);
+
+  // Write contents of the array to an output file
+  write_file(outfile, array, input_len);
 
   return 0; 
 }
