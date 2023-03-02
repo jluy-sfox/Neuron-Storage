@@ -1,5 +1,6 @@
 #include <stdio.h> 
 #include <stdlib.h>
+#include <string.h>
 
 struct dp_cmd_desc {
   unsigned int *src_addr_0;
@@ -27,7 +28,7 @@ int read_file(char *filename, char array[4096]){
 
   // Open the text file
   in = fopen(filename, "r");
-    
+
   // Read the contents of the file into the array
   while(!feof(in)){
     fscanf(in, "%c", &array[i]);
@@ -46,7 +47,7 @@ int read_file(char *filename, char array[4096]){
 
 }
 
-void write_file(char *filename, char array[4096], int arr_size){
+void write_file(char *filename, char array[4096][100], int arr_size){
 
   FILE *out;
   int i = 0;
@@ -62,7 +63,7 @@ void write_file(char *filename, char array[4096], int arr_size){
  
   // Write contents of the array to newly created file
   for (i = 0; i < arr_size; ++i){
-    fprintf(out, "%c", array[i]);
+    fprintf(out, "%s", array[i]);
   }
   
   printf("\nFile copied successfully!");
@@ -82,7 +83,8 @@ int main(int argc, char *argv[]){
   int input_len;
 
   // Variable for the storage of file contents
-  char array[4096];
+  char temp_array[4096]; // Contains elements character-by-character
+  char processed_array[4096][100]; // Elements are in string format
 
   // Check input arguments: <infile> <outfile> <passphrase> <operation>
   if (argc == 5){ 
@@ -95,14 +97,35 @@ int main(int argc, char *argv[]){
     printf("The passphrase is %s\n", passphrase);
     printf("The operation is %s\n", operation);
   } else { 
-    return 1; // Error
+    return 0; // Error
   }
 
   // Read input file and store contents in the array
-  input_len = read_file(infile, array);
+  input_len = read_file(infile, temp_array);
+
+
+  int start = 0;
+  int end;
+  int j = 0;
+  int processed_len;
+
+  // Convert array of individual characters into an array of strings
+  for (int i=0; i<input_len; ++i) {
+    if(temp_array[i] == 10 || i == (input_len-1)) {
+      end = i;
+      char subset[end-start+1];
+      strncpy(subset, &temp_array[start], end - start + 1);
+      subset[end - start + 1] = '\0';
+      strcpy(processed_array[j], subset);
+      start = end+1;
+      ++j;
+    }
+  }
+
+  processed_len = j;
 
   // Write contents of the array to an output file
-  write_file(outfile, array, input_len);
+  write_file(outfile, processed_array, processed_len);
 
   return 0; 
 }
